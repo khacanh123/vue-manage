@@ -2,12 +2,12 @@
     <div class="px-7 py-3">
         <h3 class="pb-2 font-semibold">Câu trả lời</h3>
         <div class="flex items-center py-3" v-for="item in dataAnswer">
-            <ChoiceAnswer v-bind:item="item" v-bind:ingredient="ingredient" />
+            <ChoiceAnswer v-bind:item="item" v-bind:ingredient="ingredient" v-on:handleChangeAnswer="handleChangeAnswer"
+                v-on:handleChangeAnswerTrue="handleChangeAnswerTrue" />
         </div>
     </div>
 </template>
 <script setup>
-import Editor from 'primevue/editor';
 import { ref, watch } from 'vue';
 import ChoiceAnswer from './ChoiceAnswer.vue';
 const ingredient = ref('');
@@ -30,29 +30,24 @@ const dataAnswer = ref([
     }
 ])
 const emits = defineEmits(['getDataQuestion'])
-watch(() => ingredient.value, (value, oldValue) => {
+// cập nhật thay đổi đáp án 
+const handleChangeAnswer = (item) => {
+    const indexChange = dataAnswer.value.findIndex((dt) => dt.answer === item.answer);
+    dataAnswer[indexChange] = item;
     const data = {
-        listAnswer: dataAnswer.value.map((item) => {
-            return {
-                content: item.content,
-                answer: item.answer
-            }
-        }),
+        listAnswer: dataAnswer.value,
+        answer_true: ingredient
+    }
+    emits('getDataQuestion', data)
+}
+
+const handleChangeAnswerTrue = (value) => {
+    const data = {
+        listAnswer: dataAnswer.value,
         answer_true: value
     }
     emits('getDataQuestion', data)
-})
-watch(() => dataAnswer.value, (value, oldValue) => {
-    console.log(value);
-    const data = {
-        listAnswer: dataAnswer.value.map((item) => {
-            return {
-                content: item.content,
-                answer: item.answer
-            }
-        }),
-        answer_true: value
-    }
-    emits('updateAnswer', data)
-})
+}
+
+
 </script>

@@ -5,15 +5,15 @@
     <div class="w-1/5 px-4 flex items-center">
         <i class="fa fa-trash text-[red] text-[16px]"></i>
         <div class="ml-2">
-            <RadioButton v-model="props.ingredient" inputId="ingredient1" :value="item.answer" />
+            <input type="radio" :value="item.answer" v-model="detect" :id="'hhh' + item.answer" name="aaa" />
         </div>
     </div>
 </template>
 
 <script setup>
-import { watch } from 'vue';
+import { watch, ref } from 'vue';
 import Editor from 'primevue/editor';
-
+const detect = ref('')
 const props = defineProps({
     item: {
         type: Object,
@@ -24,10 +24,15 @@ const props = defineProps({
         default: ''
     }
 })
+const emit = defineEmits(['handleChangeAnswer', 'handleChangeAnswerTrue'])
 const item = props.item;
 
 // watch
 watch(() => item.content, (newValue) => {
-    console.log(newValue);
+    emit('handleChangeAnswer', { answer: item.answer, content: newValue })
+})
+
+watch(() => detect.value, (newValue) => {
+    emit('handleChangeAnswerTrue', newValue)
 })
 </script>

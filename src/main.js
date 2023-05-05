@@ -50,6 +50,7 @@ app.use(router)
 app.use(PrimeVue)
 app.component("Checkbox", Checkbox);
 app.use(DialogService);
+app.use(ToastService)
 app.component("DynamicDialog", DynamicDialog);
 app.component("DataTable", DataTable);
 app.component("OrderList", OrderList);
