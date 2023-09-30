@@ -71,11 +71,15 @@ function onSubmit(values) {
     product.push(data);
   }
 }
+const RequestQues = () => {
+  connectApi
+}
 </script>
 
 <template>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <div class="card m-3">
+    <button>Get question</button>
     <h5 class="card-header">Vue 3 + VeeValidate - Form Validation Example (Composition API)</h5>
     <div class="card-body">
       <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors }">

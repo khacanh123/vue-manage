@@ -7,7 +7,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Vite App</title>
-
+    <style type="text/css">
+        /* Đặt chiều cao cho thẻ body và html để đảm bảo layout theo chiều cao của màn hình */
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        /* Thiết lập layout chính */
+        
+        .wrapper {
+            height: 100%;
+            display: flex;
+        }
+        /* Thiết lập sidebar cố định ở bên trái */
+        
+        .sidebar {
+            width: 250px;
+            /* Chiều rộng của sidebar */
+            background-color: #f0f0f0;
+            /* Màu nền của sidebar */
+        }
+        /* Thiết lập main content */
+        
+        .main-content {
+            flex: 1;
+            /* Chiếm phần còn lại của chiều rộng */
+            display: flex;
+            flex-direction: column;
+        }
+        /* Thiết lập menu bar cố định ở trên cùng */
+        
+        .menu-bar {
+            height: 90px;
+            background-color: #333;
+            /* Màu nền của menu bar */
+            color: white;
+            /* Màu chữ trắng trên menu bar */
+        }
+        /* Thiết lập khối mô tả */
+        
+        .description {
+            height: 150px;
+            /* Đặt chiều cao của khối mô tả là 150px */
+            background-color: #f9f9f9;
+            /* Màu nền của khối mô tả */
+            padding: 20px;
+            /* Để tạo khoảng cách giữa nội dung và menu bar */
+        }
+        /* Thiết lập phần content có chiều cao còn lại của màn hình */
+        
+        .content {
+            display: flex;
+            flex-grow: 1;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
 </head>
 
 <body>

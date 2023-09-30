@@ -24,6 +24,13 @@
                             Dashboard
                         </RouterLink>
                     </li>
+                    <li className='items-center w-full hover:bg-[#1B2B65] '>
+                        <RouterLink to='/dashboard'
+                            className='text-[14px] text-white py-[6px] leading-5 flex items-center w-full'>
+                            <i class="fa fa-area-chart m-[10px] ml-8" style="font-size:24px"></i>
+                            Lớp học
+                        </RouterLink>
+                    </li>
                 </ul>
                 <div className='text-xs text-white py-[6px] leading-5 w-full'>
 
@@ -40,10 +47,5 @@ const props = defineProps({
         type: Boolean,
         default: true
     }
-})
-watch(() => props.hiddenSideBar, (val, newV) => {
-    console.log('====================================');
-    console.log('test');
-    console.log('====================================');
 })
 </script>

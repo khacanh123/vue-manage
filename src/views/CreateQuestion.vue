@@ -2,7 +2,7 @@
 import { ref, reactive, watch } from "vue";
 import Editor from 'primevue/editor';
 import { Form, Field } from 'vee-validate';
-import createQuestionComp from '../components/CreateQuestion/index.vue'
+import createQuestionComp from '../components/CreateQuestion/Index.vue'
 import * as Yup from 'yup'
 const selectedCity = ref();
 const cities = ref([

@@ -1,10 +1,10 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
 
-import App from './App.vue'
-import router from './router'
+import App from "./App.vue";
+import router from "./router";
 
-import './assets/main.css'
+import "./assets/main.css";
 // Vuetify
 import Checkbox from "primevue/checkbox";
 import PrimeVue from "primevue/config";
@@ -43,14 +43,15 @@ import Fieldset from "primevue/fieldset";
 import RadioButton from "primevue/radiobutton";
 import CascadeSelect from "primevue/cascadeselect";
 import FileUpload from "primevue/fileupload";
-const app = createApp(App)
+import "primeicons/primeicons.css";
+const app = createApp(App);
 
-app.use(createPinia())
-app.use(router)
-app.use(PrimeVue)
+app.use(createPinia());
+app.use(router);
+app.use(PrimeVue);
 app.component("Checkbox", Checkbox);
 app.use(DialogService);
-app.use(ToastService)
+app.use(ToastService);
 app.component("DynamicDialog", DynamicDialog);
 app.component("DataTable", DataTable);
 app.component("OrderList", OrderList);
@@ -81,4 +82,4 @@ app.component("Fieldset", Fieldset);
 app.component("RadioButton", RadioButton);
 app.component("CascadeSelect", CascadeSelect);
 app.component("FileUpload", FileUpload);
-app.mount('#app')
+app.mount("#app");
