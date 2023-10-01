@@ -1,7 +1,7 @@
 <template>
     <!-- <div class="border-l-2 border-[#ebecf0]"> -->
     <div class="flex justify-between py-2 ">
-        <p>HinBroad / <a href="" class="text-[#0052cc]">HIN-1</a></p>
+        <p>{{ projectData.name }} / <a href="" class="text-[#0052cc]">{{ detailTask.code }}</a></p>
         <button @click="emits('closeTaskDetail')">
             <i class="pi pi-times"></i>
         </button>
@@ -25,8 +25,32 @@
         </div>
     </div>
     <div class="py-3">
-        <p>Reporter: Dương Văn Nam</p>
-        <p>Assignee: Nguyễn Khắc Anh</p>
+        <p>Reporter: Admin</p>
+        <div class="flex items-center">
+            <p>Assignee: </p>
+            <!-- hover -->
+            <div class="assignee flex items-center ml-3" @click="changeAssign = true" v-if="!changeAssign">
+                <p class="text">{{ displayUser }}</p>
+
+                <i class="pi pi-pencil icon-assign"></i>
+
+            </div>
+            <div class="" v-else>
+                <div class="flex items-center ml-3">
+                    <Dropdown v-model="selectedUser" :options="projectData.selectedUsers" optionLabel="name"
+                        placeholder="Chọn ..." class="z-3" />
+
+                </div>
+                <div class="ml-2 flex justify-center">
+                    <div class="p-3 border ml-1" @click="selectedUser == null ? null : updateAssign()">
+                        <i class="pi pi-check"></i>
+                    </div>
+                    <div class="p-3 border" @click="changeAssign = false">
+                        <i class="pi pi-times"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
         <p>Status: {{ renderStatus }}</p>
     </div>
     <p class="font-bold">Description </p>
@@ -87,9 +111,12 @@ const { listComment } = storeToRefs(useIssueActive())
 
 const { updateInfoIssue, addCommentOfIssue, getListCommentOfIssue } = useIssueActive()
 const emits = defineEmits(['closeTaskDetail'])
-
 const props = defineProps({
     detailTask: {
+        type: Object,
+        default: {}
+    },
+    projectData: {
         type: Object,
         default: {}
     }
@@ -99,6 +126,8 @@ const data = reactive(convertData)
 const showAddComment = ref(false);
 const contentDescription = ref('')
 const contentComment = ref('');
+const changeAssign = ref(false)
+const selectedUser = ref(null)
 
 watch(() => props.detailTask, () => {
     getListCommentOfIssue(props.detailTask.id)
@@ -107,6 +136,18 @@ watch(() => props.detailTask, () => {
 }, {
     deep: true
 })
+const displayUser = computed(() => {
+    const filterData = props.projectData?.selectedUsers?.filter((item) => item.code == props.detailTask.assign.userID);
+    console.log(filterData);
+    if(filterData && filterData[0]?.name != undefined) return filterData[0].name 
+    else return 'Unassigned'
+}) 
+const updateAssign = () => {
+    const data = {...props.detailTask};
+    data.assign.userID = selectedUser.value.code;
+    updateInfoIssue(data)
+    changeAssign.value = false
+}
 const editText = (type) => {
     if (type == 1) {
         // move
@@ -185,3 +226,22 @@ const renderStatus = computed(() => {
     else return 'Done'
 })
 </script>
+<style>
+.assignee .text {
+    width: fit-content;
+    padding: 3px;
+}
+
+.icon-assign {
+    display: none;
+    cursor: pointer;
+}
+
+.assignee:hover {
+    border: 1px solid #ddd;
+}
+
+.assignee:hover .icon-assign {
+    display: block;
+}
+</style>

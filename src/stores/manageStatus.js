@@ -11,7 +11,7 @@ export const useManageStatus = defineStore({
       this.openSideBar = !this.openSideBar;
     },
     checkCloseSideBar(route) {
-      if (route.path === "/active-sprint") {
+      if (route.path.includes("/active-sprint")) {
         this.openSideBar = false;
       }
     },

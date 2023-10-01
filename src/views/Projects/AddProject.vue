@@ -68,7 +68,7 @@ onMounted(() => {
         listUser.value = todoList.map((item) => {
             return {
                 name: item.full_name,
-                code: item._id
+                code: item.id
             }
         })
     });

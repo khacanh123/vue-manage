@@ -1,35 +1,45 @@
 <template>
-    <button @click="cloneDataFunc">cloneData</button>
+    <!-- <button @click="cloneDataFunc()">clonedata</button> -->
     <div class="content z-1 m-3">
 
         <div :class="showTaskDetail ? 'w-3/4 mt-5' : 'w-full mt-5'">
             <div class="container-b2" ref="myContainer">
-                <div class="title sticky-position" ref="currentSprint">sprint a</div>
-                <div class="box-content">
-                    <div class="content-task"></div>
-                    <div class="content-task"></div>
-                    <div class="content-task"></div>
-                    <div class="content-task"></div>
-                    <div class="content-task"></div>
-                    <div class="content-task"></div>
-                    <div class="content-task"></div>
-                    <div class="content-task"></div>
-                </div>
-                <div class="title" ref="newSprint" v-if="projectData.newsprint.namesprint !== ''">
-                    <div class="flex justify-between px-3">
+                <div class="title" ref="currentSprint" v-if="project?.activesprint?.namesprint !== ''">
+                    <div class="flex px-3">
 
-                        <p>{{ projectData.newsprint.namesprint }} {{ listIssue.issueNewTask.length }} issues</p>
-                        <button class="bg-[#25d36d] text-white p-3 font-bold rounded" @click="">Bắt đầu
-                            sprint</button>
+                        <p>{{ project?.activesprint?.namesprint }} {{ data.activeSprintTask.length }} issues</p>
+                        
                     </div>
                 </div>
-                <div class="box-content" v-if="projectData.newsprint.namesprint !== ''">
-                    <div class="border border-[#ddd] py-10 my-4">
-                        <draggable v-model="listIssue.issueNewTask" tag="div" group="meals" :animation="300" class="h-full">
+                <div class="box-content" v-if="project?.activesprint?.namesprint !== ''">
+                    
+                        <draggable v-model="data.activeSprintTask" tag="div" group="meals" :animation="300" class="h-full">
                             <template #item="{ element: meal }">
                                 <div class="content-task my-3" :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''"
                                     @click="clickItem(meal)">
-                                    <p>{{ meal.summary }}</p>
+                                    <p><span class="text-[#0052cc]">  {{ meal.code }}</span><span class="ml-2">{{ meal.summary }}</span></p>
+
+                                </div>
+                            </template>
+                        </draggable>
+                    
+
+                </div>
+                <div class="title" ref="newSprint" v-if="project?.newsprint?.namesprint !== ''">
+                    <div class="flex justify-between px-3">
+
+                        <p>{{ project?.newsprint?.namesprint }} {{ data.newSprintTask.length }} issues</p>
+                        <button class="bg-[#25d36d] text-white p-3 font-bold rounded" @click="startSprint()">Bắt đầu
+                            sprint</button>
+                    </div>
+                </div>
+                <div class="box-content" v-if="project?.newsprint?.namesprint !== ''">
+                    <div class="border border-[#ddd] py-10 my-4">
+                        <draggable v-model="data.newSprintTask" tag="div" group="meals" :animation="300" class="h-full">
+                            <template #item="{ element: meal }">
+                                <div class="content-task my-3" :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''"
+                                    @click="clickItem(meal)">
+                                    <p><span class="text-[#0052cc]">  {{ meal.code }}</span><span class="ml-2">{{ meal.summary }}</span></p>
 
                                 </div>
                             </template>
@@ -40,18 +50,18 @@
                 <div class="title" ref="blacklog">
                     <div class="flex justify-between px-3">
 
-                        <p>Backlog {{ listIssue.blacklog.length }} issues</p>
-                        <button class="bg-[#25d36d] text-white p-3 font-bold rounded" @click="createSprint = true">Tạo
+                        <p>Backlog {{ data.blacklogTask.length }} issues</p>
+                        <button v-bind:hidden="project?.newsprint?.namesprint != ''? true : false" class="bg-[#25d36d] text-white p-3 font-bold rounded" @click="createSprint = true; projectData.newsprint.namesprint = `${ project.name } Sprint ${Number(projectData.activesprint.sprintCode)+1}`">Tạo
                             sprint</button>
                     </div>
                 </div>
                 <div class="box-content">
 
-                    <draggable v-model="listIssue.blacklog" tag="div" group="meals" :animation="300" class="h-full">
+                    <draggable v-model="data.blacklogTask" tag="div" group="meals" :animation="300" class="h-full">
                         <template #item="{ element: meal }">
                             <div class="content-task my-3" :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''"
                                 @click="clickItem(meal)">
-                                <p>{{ meal.summary }}</p>
+                                <p><span class="text-[#0052cc]">  {{ meal.code }}</span><span class="ml-2">{{ meal.summary }}</span></p>
 
                             </div>
                         </template>
@@ -137,7 +147,7 @@
         </div>
         <div :class="showTaskDetail ? 'w-1/4 block z-[99999] overflow-y-auto h-[43vw]' : 'w-0 hidden'">
             <!-- <div v-if="showTaskDetail" class="overflow-y-auto"> -->
-            <DetailTask v-on:closeTaskDetail="closeDetailTask" v-bind:detailTask="detailTask.data" v-if="showTaskDetail" />
+            <DetailTask v-on:closeTaskDetail="closeDetailTask" v-bind:projectData="project"  v-bind:detailTask="detailTask.data" v-if="showTaskDetail" />
 
             <!-- </div> -->
             <!-- <DetailTask v-on:closeTaskDetail="showTaskDetail = !showTaskDetail" /> -->
@@ -183,22 +193,24 @@ import { useManageStatus } from '../../stores/manageStatus';
 import { useRoute } from "vue-router";
 import { useManageProject } from '../../stores/manageProject';
 import firebase from "@/utils/firebase";
+import { useRouter } from 'vue-router'
 
 import Calendar from 'primevue/calendar';
+import { useToast } from 'primevue/usetoast';
 const route = useRoute();
+const toast = useToast()
+const router = useRouter()
 const { allIssue } = storeToRefs(useIssueActive())
 const { activeID } = storeToRefs(useManageStatus())
-const { project } = storeToRefs(useManageProject())
-const { getListIssueActive, updateStatusIssue } = useIssueActive()
+const { project, allTask } = storeToRefs(useManageProject())
+const { getListIssueActive, updateStatusIssue, updateInfoIssue } = useIssueActive()
 const { checkCloseSideBar, setActiveID } = useManageStatus();
-const { getProjectByKey, updateProject } = useManageProject()
+const { getProjectByKey, updateProject, getTaskByProjectKey, moveTask } = useManageProject()
 
 const data = reactive({
-    todo: [],  //0
-    pending: [],//1
-    progress: [],//2
-    testing: [],//3
-    done: []//4
+    activeSprintTask: [],
+    newSprintTask: [],
+    blacklogTask: []
 })
 const projectData = reactive({
     activesprint: {},
@@ -222,64 +234,45 @@ const detailTask = reactive({
 });
 getListIssueActive(1)
 getProjectByKey(route.params.key)
-const allIssueTodo = computed(() => {
-    return data.pending.length
-})
-const allIssuePending = computed(() => {
-    return data.pending.length
-})
-const allIssueProgress = computed(() => {
-    return data.progress.length
-})
-const allIssueTesting = computed(() => {
-    return data.testing.length
-})
-const allIssueDone = computed(() => {
-    return data.done.length
-})
-watch(() => allIssue, () => {
-    data.todo = allIssue.value.filter((item) => item.status == 0)
-    data.pending = allIssue.value.filter((item) => item.status == 1)
-    data.progress = allIssue.value.filter((item) => item.status == 2)
-    data.testing = allIssue.value.filter((item) => item.status == 3)
-    data.done = allIssue.value.filter((item) => item.status == 4)
-}, {
-    deep: true
-})
-watch(() => project, () => {
+getTaskByProjectKey(route.params.key)
 
+watch(() => project.value, () => {
+    console.log(project);
+    projectData.activesprint = project.value.activesprint;
+    projectData.newsprint = project.value.newsprint;
 })
-watch(() => allIssuePending, () => {
-    data.pending.map((item) => {
-        updateStatusIssue(item, 1)
+watch(() => allTask.value, ()=>{
+    console.log(allTask);
+    data.blacklogTask = allTask.value.filter((item) => item.isInBlacklog == true)
+    data.newSprintTask = allTask.value.filter((item) => item.isInNewSprint == true)
+    data.activeSprintTask = allTask.value.filter((item) => (item.activeSprint == projectData.activesprint.sprintCode && !item.isInBlacklog && !item.isInNewSprint))
+})
+const newSprintComputed = computed(() => {
+    return data.newSprintTask.length;
+})
+const blacklogComputed = computed(() => {
+    return data.blacklogTask.length;
+})
+const activeSprintComputed = computed(() => {
+    return data.activeSprintTask.length;
+})
+watch(() => newSprintComputed, () => {
+    data.newSprintTask.map((key) => {
+        moveTask(key, 2)
     })
 }, {
     deep: true
 })
-watch(() => allIssueTodo, () => {
-    data.todo.map((item) => {
-        updateStatusIssue(item, 0)
+watch(() => activeSprintComputed, () => {
+    data.activeSprintTask.map((key) => {
+        moveTask(key, 1)
     })
 }, {
     deep: true
 })
-watch(() => allIssueProgress, () => {
-    data.progress.map((item) => {
-        updateStatusIssue(item, 2)
-    })
-}, {
-    deep: true
-})
-watch(() => allIssueTesting, () => {
-    data.testing.map((item) => {
-        updateStatusIssue(item, 3)
-    })
-}, {
-    deep: true
-})
-watch(() => allIssueDone, () => {
-    data.done.map((item) => {
-        updateStatusIssue(item, 4)
+watch(() => blacklogComputed, () => {
+    data.blacklogTask.map((key) => {
+        moveTask(key, 3)
     })
 }, {
     deep: true
@@ -318,7 +311,7 @@ onMounted(() => {
 })
 const cloneDataFunc = () => {
     const addUser = firebase.database().ref('list-tasks');
-
+console.log(allIssue.value);
     allIssue.value.map((key, index) => {
         const task = {
             code: "HBA-" + (index++),
@@ -334,8 +327,10 @@ const cloneDataFunc = () => {
             activeSprint: ""
         }
         // return task
+        console.log(task);
         addUser.push(task)
     })
+    // alert('done')
 }
 const createSprintFunction = () => {
     const updateNewSprint = { ...projectData.newsprint };
@@ -344,12 +339,44 @@ const createSprintFunction = () => {
     updateNewSprint.timeEnd = new Date(timeEnd.value).toISOString();
     const cloneProject = { ...project.value };
     cloneProject.selectedUsers = JSON.parse(JSON.stringify(project.value.selectedUsers))
-    cloneProject.blacklog = JSON.parse(JSON.stringify(project.value.blacklog))
+    // cloneProject.blacklog = JSON.parse(JSON.stringify(project.value.blacklog))
     cloneProject.activesprint = JSON.parse(JSON.stringify(project.value.activesprint))
     cloneProject.newsprint = updateNewSprint
     updateProject(cloneProject)
-    // console.log(updateNewSprint);
+    // console.log(cloneProject);
     createSprint.value = false;
+}
+const startSprint = () => {
+    const newsprint = { ...projectData.newsprint };
+    newsprint.sprintCode = '';
+    newsprint.timeStart = '';
+    newsprint.timeEnd = '';
+    newsprint.goal = '';
+    newsprint.namesprint = '';
+    const cloneProject = { ...project.value };
+    cloneProject.selectedUsers = JSON.parse(JSON.stringify(project.value.selectedUsers))
+    // cloneProject.blacklog = JSON.parse(JSON.stringify(project.value.blacklog))
+    cloneProject.activesprint = JSON.parse(JSON.stringify(projectData.newsprint))
+    cloneProject.newsprint = newsprint;
+    updateProject(cloneProject)
+    data.newSprintTask.map((key) => {
+        const cloneData = {...key};
+        cloneData.activeSprint = projectData.newsprint.sprintCode+'';
+        cloneData.isInNewSprint = false;
+        console.log(cloneData);
+        updateInfoIssue(cloneData)
+    })
+    // console.log(cloneProject);
+    toast.add({ severity: 'success', summary: 'success', detail: 'Tạo mới dự án thành công!', life: 3000 })
+        // addUser.push(cloneData);
+        router.push({
+            name: 'activesprint',
+            params: {
+                key: route.params.key
+            }
+
+        })
+    // createSprint.value = false;
 }
 const clickItem = (data) => {
     detailTask.data = data

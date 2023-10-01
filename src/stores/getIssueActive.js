@@ -27,7 +27,7 @@ export const useIssueActive = defineStore({
     async updateInfoIssue(data) {
       await firebase
         .database()
-        .ref("ListBacklog/" + data.id)
+        .ref("list-tasks/" + data.id)
         .update(data);
     },
     async getListCommentOfIssue(id) {
@@ -55,7 +55,7 @@ export const useIssueActive = defineStore({
       convertData.status = status;
       await firebase
         .database()
-        .ref("ListBacklog/" + data.id)
+        .ref("list-tasks/" + data.id)
         .update(convertData);
       // this.getListIssueActive(1);
     },

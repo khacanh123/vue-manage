@@ -101,6 +101,14 @@ const router = createRouter({
       },
       component: () => import("../views/Projects/Backlog.vue"),
     },
+    {
+      path: "/project/:key/active-sprint",
+      name: "activesprint",
+      meta: {
+        layout: admin,
+      },
+      component: () => import("../views/Projects/ActiveSprint.vue"),
+    },
   ],
 });
 
