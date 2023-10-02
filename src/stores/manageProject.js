@@ -45,27 +45,27 @@ export const useManageProject = defineStore({
       const convertData = data;
       if (status == 1) {
         // move task to activesprint
-        convertData.isInBlacklog = false
-        convertData.isInNewSprint = false
-        convertData.activeSprint = this.project.activesprint.sprintCode
+        convertData.isInBlacklog = false;
+        convertData.isInNewSprint = false;
+        convertData.activeSprint = this.project.activesprint.sprintCode;
         await firebase
           .database()
           .ref("list-tasks/" + data.id)
           .update(convertData);
       } else if (status == 2) {
         // move task to newsprint
-        convertData.isInBlacklog = false
-        convertData.isInNewSprint = true
-        convertData.activeSprint = ''
+        convertData.isInBlacklog = false;
+        convertData.isInNewSprint = true;
+        convertData.activeSprint = "";
         await firebase
           .database()
           .ref("list-tasks/" + data.id)
           .update(convertData);
       } else {
         // move task to blacklog
-        convertData.isInBlacklog = true
-        convertData.isInNewSprint = false
-        convertData.activeSprint = ''
+        convertData.isInBlacklog = true;
+        convertData.isInNewSprint = false;
+        convertData.activeSprint = "";
         await firebase
           .database()
           .ref("list-tasks/" + data.id)
@@ -87,7 +87,6 @@ export const useManageProject = defineStore({
         for (let id in todos) {
           data.push({ id, ...todos[id] });
         }
-        console.log(data);
         const activeSprint = data[0].activesprint.sprintCode;
         this.project = data[0];
         firebase
@@ -100,21 +99,22 @@ export const useManageProject = defineStore({
             const tasks = [];
             snapshot.forEach((childSnapshot) => {
               const task = childSnapshot.val();
-              console.log(task);
-              if (task.activeSprint === activeSprint) {
+              if (
+                task.activeSprint === activeSprint &&
+                !task.isInBlacklog &&
+                !task.isInNewSprint
+              ) {
                 tasks.push(task);
               }
             });
             // Now you have the filtered tasks in the 'tasks' array
             // console.log(tasks);
-            this.taskActive = tasks
+            this.taskActive = tasks;
           })
           .catch((error) => {
             console.error("Error fetching data: ", error);
           });
-
       });
-
     },
     async updateProject(data) {
       await firebase

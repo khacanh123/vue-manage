@@ -30,7 +30,8 @@
             <p>Assignee: </p>
             <!-- hover -->
             <div class="assignee flex items-center ml-3" @click="changeAssign = true" v-if="!changeAssign">
-                <p class="text">{{ displayUser }}</p>
+                <RenderImg v-bind:img="props.detailTask.assign.img" />
+                <p class="ml-2">{{ displayUser }}</p>
 
                 <i class="pi pi-pencil icon-assign"></i>
 
@@ -107,6 +108,7 @@ import { vAutofocus } from '@/directives/vAutofocus'
 import { useIssueActive } from '../stores/getIssueActive'
 import { storeToRefs } from 'pinia';
 import ItemComment from './Comment/ItemComment.vue';
+import RenderImg from './RenderImg.vue';
 const { listComment } = storeToRefs(useIssueActive())
 
 const { updateInfoIssue, addCommentOfIssue, getListCommentOfIssue } = useIssueActive()
@@ -121,6 +123,7 @@ const props = defineProps({
         default: {}
     }
 })
+console.log(props.detailTask);
 const convertData = props.detailTask
 const data = reactive(convertData)
 const showAddComment = ref(false);
@@ -138,15 +141,17 @@ watch(() => props.detailTask, () => {
 })
 const displayUser = computed(() => {
     const filterData = props.projectData?.selectedUsers?.filter((item) => item.code == props.detailTask.assign.userID);
-    console.log(filterData);
-    if(filterData && filterData[0]?.name != undefined) return filterData[0].name 
+    // console.log(filterData);
+    if (filterData && filterData[0]?.name != undefined) return filterData[0].name
     else return 'Unassigned'
-}) 
+})
 const updateAssign = () => {
-    const data = {...props.detailTask};
+    const data = { ...props.detailTask };
     data.assign.userID = selectedUser.value.code;
+    data.assign.img = selectedUser.value.img;
     updateInfoIssue(data)
     changeAssign.value = false
+    selectedUser.value = null
 }
 const editText = (type) => {
     if (type == 1) {

@@ -4,40 +4,37 @@
     <div class="flex justify-between">
         <p class="text-2xl font-bold">Manage User</p>
         <Button label="Show" icon="pi pi-external-link" class="h-[30px]" @click="visible = true" />
-        <Dialog v-model:visible="visible" modal header="Add User" :style="{ width: '50vw' }">
+        <Dialog v-model:visible="visible" modal header="Add User" :style="{ width: '30vw' }">
             <div>
-                <Form :validation-schema="schema" v-slot="{ errors }" @submit="handleCreateUser">
+                <div>
                     <div class="flex flex-wrap">
                         <div class="w-full px-7 py-3">
                             <label for="tensp" class=" font-semibold">Full Name</label>
-                            <Field type="text" class="form-control" v-model="dataUser.full_name" name="full_name"
-                                :class="{ 'p-invalid': errors.full_name }" />
-                            <small class="p-error">{{ errors.full_name || '&nbsp;' }}</small>
+                            <Field type="text" class="form-control" v-model="dataUser.full_name" name="full_name" />
+                            <!-- <small class="p-error">{{ errors.full_name || '&nbsp;' }}</small> -->
                         </div>
                         <div class="w-1/2 px-7 py-3">
                             <label for="tensp" class=" font-semibold">User Name</label>
-                            <Field type="text" class="form-control" v-model="dataUser.user_name" name="user_name"
-                                :class="{ 'p-invalid': errors.user_name }" />
-                            <small class="p-error">{{ errors.user_name || '&nbsp;' }}</small>
+                            <Field type="text" class="form-control" v-model="dataUser.user_name" name="user_name" />
+                            <!-- <small class="p-error">{{ errors.user_name || '&nbsp;' }}</small> -->
                         </div>
                         <div class="w-1/2 px-7 py-3">
                             <label for="tensp" class=" font-semibold">Password</label>
                             <Field type="password" class="form-control" v-model="dataUser.password" name="password" />
                         </div>
-                        <div class="w-1/3 px-7 py-3">
+                        <div class="w-full px-7 py-3">
                             <label for="tensp" class=" font-semibold">Email</label>
-                            <Field type="text" class="form-control" v-model="dataUser.email"
-                                :class="{ 'p-invalid': errors.emai }" />
-                            <small class="p-error">{{ errors.email || '&nbsp;' }}</small>
+                            <Field type="text" class="form-control" v-model="dataUser.email" />
+                            <!-- <small class="p-error">{{ errors.email || '&nbsp;' }}</small> -->
                         </div>
-                        <div class="w-1/3 px-7 py-3">
+                        <div class="w-1/2 px-7 py-3">
                             <label for="tensp" class=" font-semibold">Level</label>
                             <Field name="level" as="select" class="form-control" v-model="dataUser.level">
                                 <option value="0">Admin</option>
                                 <option value="1">User</option>
                             </Field>
                         </div>
-                        <div class="w-1/3 px-7 py-3">
+                        <div class="w-1/2 px-7 py-3">
                             <label for="tensp" class=" font-semibold">Status</label>
                             <Field name="status" as="select" class="form-control" v-model="dataUser.status">
                                 <option value="0">Active</option>
@@ -45,12 +42,25 @@
                             </Field>
                         </div>
                     </div>
+                    <div>
+                        <p>Chọn avatar</p>
+                        <div class="flex flex-wrap w-full">
+                            <div v-for="(item, index) in arrImage"
+                                class="m-1 hover:border-[#000] hover:border-[2px] hover:rounded-full"
+                                v-bind:class="index < 1 && 'hidden', dataUser.img == index && 'border-[2px] rounded-full border-[#000]'">
+                                <img class="h-[50px] w-[50px] rounded-full"
+                                    v-bind:src="index > 0 ? index == 1 ? 'src/assets/images/' + index + '.png' : 'src/assets/images/' + index + '.svg' : null"
+                                    @click="clickImage(index)" ref="refImg" />
+                            </div>
+                        </div>
+                    </div>
                     <div class="flex justify-center">
                         <Button type="button" class="m-2 w-[200px]" label="cancel" severity="secondary" outlined
                             @click="visible = false" />
-                        <Button type="submit" class="w-[200px] m-2" :label="editUser.isEdit ? 'Edit' : 'Create'" />
+                        <Button @click="handleCreateUser" class="w-[200px] m-2"
+                            :label="editUser.isEdit ? 'Edit' : 'Create'" />
                     </div>
-                </Form>
+                </div>
             </div>
         </Dialog>
 
@@ -79,6 +89,8 @@ const editUser = ref({
     id: '',
     isEdit: false,
 })
+const arrImage = Array.from({ length: 15 });
+console.log(arrImage);
 const listUser = ref(null)
 const dataUser = reactive({
     full_name: '',
@@ -87,14 +99,18 @@ const dataUser = reactive({
     level: '1',
     status: '0',
     idCompany: 1,
-    email: ''
+    email: '',
+    img: ''
 })
 const schema = Yup.object().shape({
     full_name: Yup.string().required('Require'),
     user_name: Yup.string().required('Require'),
     email: Yup.string().required('Require'),
 })
-
+const refImg = ref(null)
+const clickImage = (index) => {
+    dataUser.img = index + ''
+}
 const handleCreateUser = (values) => {
     if (editUser.value.isEdit) {
         firebase
@@ -121,6 +137,7 @@ const setDataUpdate = (data, frozen, index) => {
     editUser.value.id = data.id;
     editUser.value.isEdit = true;
     visible.value = true;
+    dataUser.img = data.img;
 }
 
 onMounted(() => {

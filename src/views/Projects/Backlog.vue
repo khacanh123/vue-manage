@@ -4,25 +4,29 @@
 
         <div :class="showTaskDetail ? 'w-3/4 mt-5' : 'w-full mt-5'">
             <div class="container-b2" ref="myContainer">
-                <div class="title" ref="currentSprint" v-if="project?.activesprint?.namesprint !== ''">
+                <div class="title sticky-position" ref="currentSprint" v-if="project?.activesprint?.namesprint !== ''">
                     <div class="flex px-3">
 
                         <p>{{ project?.activesprint?.namesprint }} {{ data.activeSprintTask.length }} issues</p>
-                        
+
                     </div>
                 </div>
                 <div class="box-content" v-if="project?.activesprint?.namesprint !== ''">
-                    
-                        <draggable v-model="data.activeSprintTask" tag="div" group="meals" :animation="300" class="h-full">
-                            <template #item="{ element: meal }">
-                                <div class="content-task my-3" :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''"
-                                    @click="clickItem(meal)">
-                                    <p><span class="text-[#0052cc]">  {{ meal.code }}</span><span class="ml-2">{{ meal.summary }}</span></p>
 
+                    <draggable v-model="data.activeSprintTask" tag="div" group="meals" :animation="300" class="h-full">
+                        <template #item="{ element: meal }">
+                            <div class="content-task my-3 flex justify-between"
+                                :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''" @click="clickItem(meal)">
+                                <p><span class="text-[#0052cc]"> {{ meal.code }}</span><span class="ml-2">{{ meal.summary
+                                }}</span></p>
+                                <div class="flex">
+                                    <RenderImg v-bind:img="meal.assign.img" />
+                                    <p>7</p>
                                 </div>
-                            </template>
-                        </draggable>
-                    
+                            </div>
+                        </template>
+                    </draggable>
+
 
                 </div>
                 <div class="title" ref="newSprint" v-if="project?.newsprint?.namesprint !== ''">
@@ -37,10 +41,14 @@
                     <div class="border border-[#ddd] py-10 my-4">
                         <draggable v-model="data.newSprintTask" tag="div" group="meals" :animation="300" class="h-full">
                             <template #item="{ element: meal }">
-                                <div class="content-task my-3" :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''"
-                                    @click="clickItem(meal)">
-                                    <p><span class="text-[#0052cc]">  {{ meal.code }}</span><span class="ml-2">{{ meal.summary }}</span></p>
-
+                                <div class="content-task my-3 flex justify-between"
+                                    :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''" @click="clickItem(meal)">
+                                    <p><span class="text-[#0052cc]"> {{ meal.code }}</span><span class="ml-2">{{
+                                        meal.summary }}</span></p>
+                                    <div class="flex">
+                                        <RenderImg v-bind:img="meal.assign.img" />
+                                        <p>7</p>
+                                    </div>
                                 </div>
                             </template>
                         </draggable>
@@ -51,7 +59,9 @@
                     <div class="flex justify-between px-3">
 
                         <p>Backlog {{ data.blacklogTask.length }} issues</p>
-                        <button v-bind:hidden="project?.newsprint?.namesprint != ''? true : false" class="bg-[#25d36d] text-white p-3 font-bold rounded" @click="createSprint = true; projectData.newsprint.namesprint = `${ project.name } Sprint ${Number(projectData.activesprint.sprintCode)+1}`">Tạo
+                        <button v-bind:hidden="project?.newsprint?.namesprint != '' ? true : false"
+                            class="bg-[#25d36d] text-white p-3 font-bold rounded"
+                            @click="createSprint = true; projectData.newsprint.namesprint = `${project.name} Sprint ${Number(projectData.activesprint.sprintCode) + 1}`">Tạo
                             sprint</button>
                     </div>
                 </div>
@@ -59,16 +69,29 @@
 
                     <draggable v-model="data.blacklogTask" tag="div" group="meals" :animation="300" class="h-full">
                         <template #item="{ element: meal }">
-                            <div class="content-task my-3" :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''"
-                                @click="clickItem(meal)">
-                                <p><span class="text-[#0052cc]">  {{ meal.code }}</span><span class="ml-2">{{ meal.summary }}</span></p>
-
+                            <div class="content-task my-3 flex justify-between"
+                                :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''" @click="clickItem(meal)">
+                                <p><span class="text-[#0052cc]"> {{ meal.code }}</span><span class="ml-2">{{ meal.summary
+                                }}</span></p>
+                                <div class="flex">
+                                    <RenderImg v-bind:img="meal.assign.img" />
+                                    <p>7</p>
+                                </div>
                             </div>
                         </template>
                     </draggable>
                 </div>
                 <div class="w-[95%] m-auto">
-                    <button class="bg-[#25d36d] mt-3 text-white p-3 rounded">Tạo issue</button>
+                    <div v-if="createTask">
+
+                        <InputText class="w-full" v-model="taskName" />
+                        <div class="flex justify-end">
+                            <p class="p-2 text-[#0052cc] cursor-pointer" @click="createTaskFunction()">Tạo</p>
+                            <p class="p-2 text-[#0052cc] cursor-pointer" @click="createTask = false, taskName = ''">exit</p>
+                        </div>
+                    </div>
+                    <button class="bg-[#25d36d] mt-3 text-white p-3 rounded" v-else @click="createTask = true">Tạo
+                        issue</button>
                 </div>
             </div>
 
@@ -147,7 +170,8 @@
         </div>
         <div :class="showTaskDetail ? 'w-1/4 block z-[99999] overflow-y-auto h-[43vw]' : 'w-0 hidden'">
             <!-- <div v-if="showTaskDetail" class="overflow-y-auto"> -->
-            <DetailTask v-on:closeTaskDetail="closeDetailTask" v-bind:projectData="project"  v-bind:detailTask="detailTask.data" v-if="showTaskDetail" />
+            <DetailTask v-on:closeTaskDetail="closeDetailTask" v-bind:projectData="project"
+                v-bind:detailTask="detailTask.data" v-if="showTaskDetail" />
 
             <!-- </div> -->
             <!-- <DetailTask v-on:closeTaskDetail="showTaskDetail = !showTaskDetail" /> -->
@@ -197,6 +221,7 @@ import { useRouter } from 'vue-router'
 
 import Calendar from 'primevue/calendar';
 import { useToast } from 'primevue/usetoast';
+import RenderImg from '../../components/RenderImg.vue';
 const route = useRoute();
 const toast = useToast()
 const router = useRouter()
@@ -232,6 +257,8 @@ const timeEnd = ref()
 const detailTask = reactive({
     data: null
 });
+const createTask = ref(false)
+const taskName = ref('')
 getListIssueActive(1)
 getProjectByKey(route.params.key)
 getTaskByProjectKey(route.params.key)
@@ -241,7 +268,7 @@ watch(() => project.value, () => {
     projectData.activesprint = project.value.activesprint;
     projectData.newsprint = project.value.newsprint;
 })
-watch(() => allTask.value, ()=>{
+watch(() => allTask.value, () => {
     console.log(allTask);
     data.blacklogTask = allTask.value.filter((item) => item.isInBlacklog == true)
     data.newSprintTask = allTask.value.filter((item) => item.isInNewSprint == true)
@@ -309,17 +336,40 @@ onMounted(() => {
     contentBox.addEventListener("scroll", handleScroll);
 
 })
+const createTaskFunction = () => {
+    const task = {
+        code: `${route.params.key}-` + (allTask.value.length + 1),
+        summary: taskName.value,
+        projectKey: `${route.params.key}`,
+        assign: {
+            userID: "",
+            estimate: "",
+            img: '',
+        },
+        status: 0,
+        isInBlacklog: true,
+        isInNewSprint: false,
+        activeSprint: ""
+    }
+    if (taskName.value.trim() != '') {
+        const addTask = firebase.database().ref('list-tasks');
+        addTask.push(task)
+        createTask.value = false;
+        toast.add({ severity: 'success', summary: 'success', detail: 'Tạo task thành công!', life: 3000 })
+    }
+}
 const cloneDataFunc = () => {
     const addUser = firebase.database().ref('list-tasks');
-console.log(allIssue.value);
+    console.log(allIssue.value);
     allIssue.value.map((key, index) => {
         const task = {
-            code: "HBA-" + (index++),
+            code: `${route.params.key}-` + (index++),
             summary: key.summary,
-            projectKey: "HBA",
+            projectKey: `${route.params.key}`,
             assign: {
                 userID: "",
-                estimate: ""
+                estimate: "",
+                img: '',
             },
             status: 0,
             isInBlacklog: true,
@@ -360,22 +410,22 @@ const startSprint = () => {
     cloneProject.newsprint = newsprint;
     updateProject(cloneProject)
     data.newSprintTask.map((key) => {
-        const cloneData = {...key};
-        cloneData.activeSprint = projectData.newsprint.sprintCode+'';
+        const cloneData = { ...key };
+        cloneData.activeSprint = projectData.newsprint.sprintCode + '';
         cloneData.isInNewSprint = false;
         console.log(cloneData);
         updateInfoIssue(cloneData)
     })
     // console.log(cloneProject);
-    toast.add({ severity: 'success', summary: 'success', detail: 'Tạo mới dự án thành công!', life: 3000 })
-        // addUser.push(cloneData);
-        router.push({
-            name: 'activesprint',
-            params: {
-                key: route.params.key
-            }
+    toast.add({ severity: 'success', summary: 'success', detail: 'Sprint đã được bắt đầu!', life: 3000 })
+    // addUser.push(cloneData);
+    router.push({
+        name: 'activesprint',
+        params: {
+            key: route.params.key
+        }
 
-        })
+    })
     // createSprint.value = false;
 }
 const clickItem = (data) => {
@@ -419,7 +469,7 @@ const closeDetailTask = () => {
 
 .content-task {
     border: 1px solid #ddd;
-    padding: 15px 5px;
+    padding: 15px 8px;
     border-radius: 5px;
 }
 

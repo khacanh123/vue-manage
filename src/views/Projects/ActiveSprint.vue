@@ -6,12 +6,13 @@
                 <div class="text-[24px] text-[#172b4d] pb-1">HinBroad Sprint 1</div>
                 <div class="w-100px">- Build câu trúc project - Trang Active Sprint</div>
             </div>
-            <div class="flex">
+            <div class="flex items-center">
                 <div class="flex items-center">
 
                     <i class="pi pi-clock"></i>
                     <p class="pl-2"> còn lại 3 ngày</p>
                 </div>
+                <button class="text-white h-9 px-3 rounded ml-2 bg-[#3B82F6]">Đóng Sprint</button>
                 <div>
 
                 </div>
@@ -102,7 +103,8 @@
         </div>
         <div :class="showTaskDetail ? 'w-1/4 block z-[99999] overflow-y-auto h-[43vw]' : 'w-0 hidden'">
             <!-- <div v-if="showTaskDetail" class="overflow-y-auto"> -->
-            <DetailTask v-on:closeTaskDetail="closeDetailTask" v-bind:detailTask="detailTask.data" v-if="showTaskDetail" v-bind:projectData="project"/>
+            <DetailTask v-on:closeTaskDetail="closeDetailTask" v-bind:detailTask="detailTask.data" v-if="showTaskDetail"
+                v-bind:projectData="project" />
 
             <!-- </div> -->
             <!-- <DetailTask v-on:closeTaskDetail="showTaskDetail = !showTaskDetail" /> -->
@@ -121,11 +123,11 @@ import { useManageStatus } from '../../stores/manageStatus';
 import { useManageProject } from '../../stores/manageProject';
 import { useRoute } from "vue-router";
 const route = useRoute();
-const { taskActive,project } = storeToRefs(useManageProject())
+const { taskActive, project } = storeToRefs(useManageProject())
 const { activeID } = storeToRefs(useManageStatus())
 const { getListIssueActive, updateStatusIssue } = useIssueActive()
 const { checkCloseSideBar, setActiveID } = useManageStatus();
-const {getProjectByKey, getTaskInActiveSprint} = useManageProject()
+const { getProjectByKey, getTaskInActiveSprint } = useManageProject()
 const data = reactive({
     todo: [],  //0
     pending: [],//1
@@ -157,7 +159,7 @@ const taskActiveDone = computed(() => {
     return data.done.length
 })
 // getProjectByKey(route.params.key);
-getTaskInActiveSprint(route.params.key,project.value?.newsprint?.sprintCode)
+getTaskInActiveSprint(route.params.key, project.value?.newsprint?.sprintCode)
 
 watch(() => taskActive, () => {
     data.todo = taskActive.value.filter((item) => item.status == 0)
