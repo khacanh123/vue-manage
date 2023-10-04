@@ -12,6 +12,4 @@ const props = defineProps({
         default: ''
     }
 })
-console.log(props.img);
-const arrImage = Array.from({ length: 15 })
 </script>

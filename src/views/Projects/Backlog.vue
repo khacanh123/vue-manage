@@ -15,9 +15,11 @@
 
                     <draggable v-model="data.activeSprintTask" tag="div" group="meals" :animation="300" class="h-full">
                         <template #item="{ element: meal }">
-                            <div class="content-task my-3 flex justify-between"
-                                :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''" @click="clickItem(meal)">
-                                <p><span class="text-[#0052cc]"> {{ meal.code }}</span><span class="ml-2">{{ meal.summary
+                            <div class="content-task flex cursor-move justify-between"
+                                :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''" @click="clickItem(meal)"
+                                @contextmenu="showMenu">
+                                <p><span class="text-[#0052cc] text-val"> {{ meal.code }}</span><span class="ml-2">{{
+                                    meal.summary
                                 }}</span></p>
                                 <div class="flex">
                                     <RenderImg v-bind:img="meal.assign.img" />
@@ -41,9 +43,10 @@
                     <div class="border border-[#ddd] py-10 my-4">
                         <draggable v-model="data.newSprintTask" tag="div" group="meals" :animation="300" class="h-full">
                             <template #item="{ element: meal }">
-                                <div class="content-task my-3 flex justify-between"
-                                    :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''" @click="clickItem(meal)">
-                                    <p><span class="text-[#0052cc]"> {{ meal.code }}</span><span class="ml-2">{{
+                                <div class="content-task cursor-move flex justify-between"
+                                    :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''" @click="clickItem(meal)"
+                                    @contextmenu="showMenu">
+                                    <p><span class="text-[#0052cc] text-val"> {{ meal.code }}</span><span class="ml-2">{{
                                         meal.summary }}</span></p>
                                     <div class="flex">
                                         <RenderImg v-bind:img="meal.assign.img" />
@@ -69,9 +72,11 @@
 
                     <draggable v-model="data.blacklogTask" tag="div" group="meals" :animation="300" class="h-full">
                         <template #item="{ element: meal }">
-                            <div class="content-task my-3 flex justify-between"
-                                :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''" @click="clickItem(meal)">
-                                <p><span class="text-[#0052cc]"> {{ meal.code }}</span><span class="ml-2">{{ meal.summary
+                            <div class="content-task cursor-move flex justify-between"
+                                :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''" @click="clickItem(meal)"
+                                @contextmenu="showMenu">
+                                <p><span class="text-[#0052cc] text-val"> {{ meal.code }}</span><span class="ml-2">{{
+                                    meal.summary
                                 }}</span></p>
                                 <div class="flex">
                                     <RenderImg v-bind:img="meal.assign.img" />
@@ -81,7 +86,7 @@
                         </template>
                     </draggable>
                 </div>
-                <div class="w-[95%] m-auto">
+                <div class="w-[95%] mx-auto my-4">
                     <div v-if="createTask">
 
                         <InputText class="w-full" v-model="taskName" />
@@ -95,80 +100,9 @@
                 </div>
             </div>
 
-            <!-- <div class=" overflow-y-auto h-[43vw] flex">
-                <div class="w-1/5 relative">
-                    <div class="text-[#5e6c84] w-full p-[5px] bg-white z-[99999] text-[16px] pt-3 fixed">
-                        <p>TODO</p>
-                    </div>
-                    <div class="h-[25vw] mt-12">
-                        <draggable v-model="data.todo" tag="div" group="meals" :animation="300" class="h-full">
-                            <template #item="{ element: meal }">
-                                <div class="task-item my-3 mx-[5px]" :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''"
-                                    @click="clickItem(meal)">
-                                    <TaskItem v-bind:itemTask="meal" />
-                                </div>
-                            </template>
-                        </draggable>
-                    </div>
-                </div>
-                <div class="w-1/5">
-                    <h3 class="text-[#5e6c84] w-full p-[5px] bg-white z-[99999] text-[16px] pt-3 fixed">PENDING</h3>
-                    <div class="h-[25vw] mt-12">
-                        <draggable v-model="data.pending" tag="div" group="meals" :animation="300" class="h-full">
-                            <template #item="{ element: meal }">
-                                <div class="task-item my-3 mx-[5px]" :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''"
-                                    @click="clickItem(meal)">
-                                    <TaskItem v-bind:itemTask="meal" />
-                                </div>
-                            </template>
-                        </draggable>
-                    </div>
-                </div>
-                <div class="w-1/5">
-                    <h3 class="text-[#5e6c84] w-full p-[5px] bg-white z-[99999] text-[16px] pt-3 fixed">IN PROGRESS</h3>
-                    <div class="h-[25vw] mt-12">
-                        <draggable v-model="data.progress" tag="div" group="meals" :animation="300" class="h-full">
-                            <template #item="{ element: meal }">
-                                <div class="task-item my-3 mx-[5px]" :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''"
-                                    @click="clickItem(meal)">
-                                    <TaskItem v-bind:itemTask="meal" />
 
-                                </div>
-                            </template>
-                        </draggable>
-                    </div>
-                </div>
-                <div class="w-1/5">
-                    <h3 class="text-[#5e6c84] w-full p-[5px] bg-white z-[99999] text-[16px] pt-3 fixed">IN TESTING</h3>
-                    <div class="h-[25vw] mt-12">
-                        <draggable v-model="data.testing" tag="div" group="meals" :animation="300" class="h-full">
-                            <template #item="{ element: meal }">
-                                <div class="task-item my-3 mx-[5px]" :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''"
-                                    @click="clickItem(meal)">
-                                    <TaskItem v-bind:itemTask="meal" />
-
-                                </div>
-                            </template>
-                        </draggable>
-                    </div>
-                </div>
-                <div class="w-1/5">
-                    <h3 class="text-[#5e6c84] w-full p-[5px] bg-white z-[99999] text-[16px] pt-3 fixed">DONE</h3>
-                    <div class="h-[25vw] mt-12">
-                        <draggable v-model="data.done" tag="div" group="meals" :animation="300" class="h-full">
-                            <template #item="{ element: meal }">
-                                <div class="task-item my-3 mx-[5px]" :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''"
-                                    @click="clickItem(meal)">
-                                    <TaskItem v-bind:itemTask="meal" />
-
-                                </div>
-                            </template>
-                        </draggable>
-                    </div>
-                </div>
-            </div> -->
         </div>
-        <div :class="showTaskDetail ? 'w-1/4 block z-[99999] overflow-y-auto h-[43vw]' : 'w-0 hidden'">
+        <div :class="showTaskDetail ? 'w-1/4 block z-[99999] h-[43vw]' : 'w-0 hidden'">
             <!-- <div v-if="showTaskDetail" class="overflow-y-auto"> -->
             <DetailTask v-on:closeTaskDetail="closeDetailTask" v-bind:projectData="project"
                 v-bind:detailTask="detailTask.data" v-if="showTaskDetail" />
@@ -204,6 +138,28 @@
             </div>
         </div>
     </Dialog>
+    <div ref="contextMenu" class="context-menu py-3 w-[200px]">
+        <div>
+            <p class="font-bold pl-2">Chuyển đến:</p>
+            <div v-if="itemTask?.isInBlacklog && !itemTask?.isInNewSprint">
+                <p class="py-1 pl-2 hover:bg-[#ddd]" v-if="project.newsprint.namesprint != ''">{{
+                    project.newsprint.namesprint }}
+                </p>
+                <p class="py-1 pl-2 hover:bg-[#ddd]">Active Sprint</p>
+            </div>
+            <div v-else-if="!itemTask?.isInBlacklog && itemTask?.isInNewSprint">
+                <p class="py-1 pl-2 hover:bg-[#ddd]">Active Sprint</p>
+
+                <p class="py-1 pl-2 hover:bg-[#ddd]">Blacklog</p>
+            </div>
+            <div v-else>
+                <p class="py-1 pl-2 hover:bg-[#ddd]" v-if="project?.newsprint?.namesprint != ''">{{
+                    project?.newsprint?.namesprint }}
+                </p>
+                <p class="py-1 pl-2 hover:bg-[#ddd]">Blacklog</p>
+            </div>
+        </div>
+    </div>
 </template>
 <script setup>
 import { ref, onMounted, computed, watch, reactive } from 'vue';
@@ -227,10 +183,10 @@ const toast = useToast()
 const router = useRouter()
 const { allIssue } = storeToRefs(useIssueActive())
 const { activeID } = storeToRefs(useManageStatus())
-const { project, allTask } = storeToRefs(useManageProject())
+const { project, allTask, itemTask } = storeToRefs(useManageProject())
 const { getListIssueActive, updateStatusIssue, updateInfoIssue } = useIssueActive()
 const { checkCloseSideBar, setActiveID } = useManageStatus();
-const { getProjectByKey, updateProject, getTaskByProjectKey, moveTask } = useManageProject()
+const { getProjectByKey, updateProject, getTaskByProjectKey, moveTask, getTaskByCode } = useManageProject()
 
 const data = reactive({
     activeSprintTask: [],
@@ -251,6 +207,7 @@ const myContainer = ref(null);
 const currentSprint = ref(null);
 const newSprint = ref(null);
 const blacklog = ref(null)
+const contextMenu = ref(null);
 const createSprint = ref(false)
 const timeStart = ref();
 const timeEnd = ref()
@@ -304,6 +261,7 @@ watch(() => blacklogComputed, () => {
 }, {
     deep: true
 })
+
 onMounted(() => {
     checkCloseSideBar(route);
     const contentBox = myContainer.value;
@@ -331,11 +289,27 @@ onMounted(() => {
             title3.classList.remove("sticky-position");
             title2.classList.add("sticky-position");
         }
+        contextMenu.value.style.display = 'none';
+
     };
 
     contentBox.addEventListener("scroll", handleScroll);
-
+    document.addEventListener('click', () => {
+        contextMenu.value.style.display = 'none';
+    });
 })
+const showMenu = (event) => {
+    const element = document.createElement('div');
+    element.innerHTML = event.target.innerHTML;
+    const taskCode = element.querySelector('.text-val').textContent;
+
+    event.preventDefault();
+    getTaskByCode(taskCode)
+    contextMenu.value.style.display = 'block';
+    contextMenu.value.style.left = `${event.pageX - 250}px`;
+    contextMenu.value.style.top = `${event.pageY}px`;
+    activeID.value = itemTask.value.id;
+}
 const createTaskFunction = () => {
     const task = {
         code: `${route.params.key}-` + (allTask.value.length + 1),
@@ -481,5 +455,14 @@ const closeDetailTask = () => {
 .title {
     background-color: rgb(240, 237, 237);
     padding: 10px;
+}
+
+.context-menu {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1;
 }
 </style>

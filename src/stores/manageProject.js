@@ -8,6 +8,7 @@ export const useManageProject = defineStore({
     project: {},
     allTask: [],
     taskActive: [],
+    itemTask: {},
   }),
   actions: {
     async getProjectByKey(key) {
@@ -24,6 +25,21 @@ export const useManageProject = defineStore({
         }
         // console.log(data);
         this.project = data[0];
+      });
+    },
+    async getTaskByCode(code) {
+      const todoRef = await firebase
+        .database()
+        .ref("list-tasks")
+        .orderByChild("code")
+        .equalTo(code);
+      todoRef.on("value", (snapshot) => {
+        const todos = snapshot.val();
+        const data = [];
+        for (let id in todos) {
+          data.push({ id, ...todos[id] });
+        }
+        this.itemTask = data[0];
       });
     },
     async getTaskByProjectKey(key) {
