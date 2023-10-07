@@ -18,12 +18,15 @@
                             <div class="content-task flex cursor-move justify-between"
                                 :class="activeID == meal.id ? 'bg-[#ebecf0]' : ''" @click="clickItem(meal)"
                                 @contextmenu="showMenu">
-                                <p><span class="text-[#0052cc] text-val"> {{ meal.code }}</span><span class="ml-2">{{
-                                    meal.summary
-                                }}</span></p>
+                                <p><span class="text-[#0052cc] text-val"
+                                        :style="meal.status == 4 && 'text-decoration-line: line-through'"> {{
+                                            meal.code }}</span><span class="ml-2">{{
+        meal.summary
+    }}</span></p>
                                 <div class="flex">
                                     <RenderImg v-bind:img="meal.assign.img" />
-                                    <p>7</p>
+                                    <p class="p-1 h-[35px] text-center w-[35px] bg-[#ddd] rounded-full ml-2">{{
+                                        meal.assign.estimate }}</p>
                                 </div>
                             </div>
                         </template>
@@ -142,21 +145,23 @@
         <div>
             <p class="font-bold pl-2">Chuyển đến:</p>
             <div v-if="itemTask?.isInBlacklog && !itemTask?.isInNewSprint">
-                <p class="py-1 pl-2 hover:bg-[#ddd]" v-if="project.newsprint.namesprint != ''">{{
-                    project.newsprint.namesprint }}
+                <p class="py-1 pl-2 hover:bg-[#ddd]" v-if="project.newsprint.namesprint != ''"
+                    @click="moveTask(itemTask, 2)">{{
+                        project.newsprint.namesprint }}
                 </p>
-                <p class="py-1 pl-2 hover:bg-[#ddd]">Active Sprint</p>
+                <p class="py-1 pl-2 hover:bg-[#ddd]" @click="moveTask(itemTask, 1)">Active Sprint</p>
             </div>
             <div v-else-if="!itemTask?.isInBlacklog && itemTask?.isInNewSprint">
-                <p class="py-1 pl-2 hover:bg-[#ddd]">Active Sprint</p>
+                <p class="py-1 pl-2 hover:bg-[#ddd]" @click="moveTask(itemTask, 1)">Active Sprint</p>
 
-                <p class="py-1 pl-2 hover:bg-[#ddd]">Blacklog</p>
+                <p class="py-1 pl-2 hover:bg-[#ddd]" @click="moveTask(itemTask, 3)">Blacklog</p>
             </div>
             <div v-else>
-                <p class="py-1 pl-2 hover:bg-[#ddd]" v-if="project?.newsprint?.namesprint != ''">{{
-                    project?.newsprint?.namesprint }}
+                <p class="py-1 pl-2 hover:bg-[#ddd]" v-if="project?.newsprint?.namesprint != ''"
+                    @click="moveTask(itemTask, 2)">{{
+                        project?.newsprint?.namesprint }}
                 </p>
-                <p class="py-1 pl-2 hover:bg-[#ddd]">Blacklog</p>
+                <p class="py-1 pl-2 hover:bg-[#ddd]" @click="moveTask(itemTask, 3)">Blacklog</p>
             </div>
         </div>
     </div>

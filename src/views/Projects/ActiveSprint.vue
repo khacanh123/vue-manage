@@ -1,10 +1,10 @@
 <template>
-    <div class="description bg-white border-b-2 border-[ #ebecf0] z-[99999]">
+    <div class="description">
         <div class="flex justify-between">
             <div>
                 <div class="text-[14px] text-[#6b778c]">HIN BROAD </div>
-                <div class="text-[24px] text-[#172b4d] pb-1">HinBroad Sprint 1</div>
-                <div class="w-100px">- Build câu trúc project - Trang Active Sprint</div>
+                <div class="text-[24px] text-[#172b4d] pb-1">{{ project?.activesprint?.namesprint }}</div>
+                <div class="w-100px">{{ project?.activesprint?.goal }}</div>
             </div>
             <div class="flex items-center">
                 <div class="flex items-center">
@@ -12,13 +12,14 @@
                     <i class="pi pi-clock"></i>
                     <p class="pl-2"> còn lại 3 ngày</p>
                 </div>
-                <button class="text-white h-9 px-3 rounded ml-2 bg-[#3B82F6]">Đóng Sprint</button>
+                <button class="text-white h-9 px-3 rounded ml-2 bg-[#3B82F6]" @click="finnishSprint = true">Đóng
+                    Sprint</button>
                 <div>
 
                 </div>
             </div>
         </div>
-        <div class="py-2 flex items-center bg-white">
+        <div class=" flex items-center mb-4">
             <div>Sắp xếp theo: </div>
             <div class="m-2 p-3 text-[#0052cc] hover:border hover:border-[#ddd]"
                 :class="filterMyIssue ? 'bg-[#344563] text-[#fff]' : ''" @click="filterMyIssue = !filterMyIssue">Công việc
@@ -26,11 +27,11 @@
             <div class="m-2 text-[#0052cc] hover:border hover:border-[#ddd] p-3">Cập nhật gần đây </div>
         </div>
     </div>
-    <div class="content z-1 m-3">
+    <div class="content z-[10] m-3">
         <div :class="showTaskDetail ? 'w-3/4 ' : 'w-full'">
             <div class=" overflow-y-auto h-[43vw] flex">
                 <div class="w-1/5 relative">
-                    <div class="text-[#5e6c84] w-full p-[5px] bg-white z-[99999] text-[16px] pt-3 fixed">
+                    <div class="text-[#5e6c84] w-full p-[5px]  z-[10] bg-white text-[16px] pt-3 fixed">
                         <p>TODO</p>
                     </div>
                     <div class="h-[25vw] mt-12">
@@ -45,7 +46,7 @@
                     </div>
                 </div>
                 <div class="w-1/5">
-                    <h3 class="text-[#5e6c84] w-full p-[5px] bg-white z-[99999] text-[16px] pt-3 fixed">PENDING</h3>
+                    <h3 class="text-[#5e6c84] w-full p-[5px]  z-[10] bg-white text-[16px] pt-3 fixed">PENDING</h3>
                     <div class="h-[25vw] mt-12">
                         <draggable v-model="data.pending" tag="div" group="meals" :animation="300" class="h-full">
                             <template #item="{ element: meal }">
@@ -58,7 +59,7 @@
                     </div>
                 </div>
                 <div class="w-1/5">
-                    <h3 class="text-[#5e6c84] w-full p-[5px] bg-white z-[99999] text-[16px] pt-3 fixed">IN PROGRESS</h3>
+                    <h3 class="text-[#5e6c84] w-full p-[5px] z-[10] bg-white text-[16px] pt-3 fixed">IN PROGRESS</h3>
                     <div class="h-[25vw] mt-12">
                         <draggable v-model="data.progress" tag="div" group="meals" :animation="300" class="h-full">
                             <template #item="{ element: meal }">
@@ -72,7 +73,7 @@
                     </div>
                 </div>
                 <div class="w-1/5">
-                    <h3 class="text-[#5e6c84] w-full p-[5px] bg-white z-[99999] text-[16px] pt-3 fixed">IN TESTING</h3>
+                    <h3 class="text-[#5e6c84] w-full p-[5px]  z-[10] bg-white text-[16px] pt-3 fixed">IN TESTING</h3>
                     <div class="h-[25vw] mt-12">
                         <draggable v-model="data.testing" tag="div" group="meals" :animation="300" class="h-full">
                             <template #item="{ element: meal }">
@@ -86,7 +87,7 @@
                     </div>
                 </div>
                 <div class="w-1/5">
-                    <h3 class="text-[#5e6c84] w-full p-[5px] bg-white z-[99999] text-[16px] pt-3 fixed">DONE</h3>
+                    <h3 class="text-[#5e6c84] w-full p-[5px] z-[10] bg-white text-[16px] pt-3 fixed">DONE</h3>
                     <div class="h-[25vw] mt-12">
                         <draggable v-model="data.done" tag="div" group="meals" :animation="300" class="h-full">
                             <template #item="{ element: meal }">
@@ -101,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div :class="showTaskDetail ? 'w-1/4 block z-[99999] overflow-y-auto h-[43vw]' : 'w-0 hidden'">
+        <div :class="showTaskDetail ? 'w-1/4 block z-[10] overflow-y-auto h-[43vw]' : 'w-0 hidden'">
             <!-- <div v-if="showTaskDetail" class="overflow-y-auto"> -->
             <DetailTask v-on:closeTaskDetail="closeDetailTask" v-bind:detailTask="detailTask.data" v-if="showTaskDetail"
                 v-bind:projectData="project" />
@@ -110,6 +111,12 @@
             <!-- <DetailTask v-on:closeTaskDetail="showTaskDetail = !showTaskDetail" /> -->
         </div>
     </div>
+    <Dialog v-model:visible="finnishSprint" modal header="Kết thúc Sprint hiện tại" :style="{ width: '500px' }"
+        class="z-[999999]">
+        <div class="flex flex-col justify-center">
+
+        </div>
+    </Dialog>
 </template>
 <script setup>
 import { ref, onMounted, computed, watch, reactive } from 'vue';
@@ -136,6 +143,7 @@ const data = reactive({
     done: []//4
 })
 const showTaskDetail = ref(false)
+const finnishSprint = ref(false)
 const detailTask = reactive({
     data: null
 });

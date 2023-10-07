@@ -24,6 +24,29 @@
             <button class="bg-[rgba(9,30,66,.08)] m-1" @click="optionClose(1)"><i class="pi pi-times"></i></button>
         </div>
     </div>
+    <div class="flex items-center">
+        <p>Estimate: </p>
+        <div class="assignee flex items-center ml-10" @click="changeEstimate = true" v-if="!changeEstimate">
+
+            <p>{{ itemTask?.assign?.estimate == '' ? 'Unestimate' : itemTask?.assign?.estimate }}</p>
+            <div class="icon-assign bg-[#f4f5f7] cursor-pointer w-fit px-2">
+                <i class="pi pi-pencil"></i>
+
+            </div>
+
+        </div>
+        <div class="ml-10" v-else>
+            <input class="h-[30px] w-[100px] border-[#ddd] border rounded" v-model="estimate" />
+            <div class=" flex justify-center">
+                <div class="p-3 border ml-1" @click="estimate == '' ? null : updateEstimate()">
+                    <i class="pi pi-check"></i>
+                </div>
+                <div class="p-3 border" @click="changeEstimate = false">
+                    <i class="pi pi-times"></i>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="overflow-y-auto h-[40vw]">
         <div class="py-3">
             <p>Reporter: Admin</p>
@@ -130,7 +153,7 @@ const props = defineProps({
     }
 })
 getTaskByCode(props.detailTask.code)
-
+console.log(props.detailTask);
 const convertData = itemTask.value
 const data = reactive(convertData)
 const showAddComment = ref(false);
@@ -138,7 +161,8 @@ const contentDescription = ref('')
 const contentComment = ref('');
 const changeAssign = ref(false)
 const selectedUser = ref(null)
-
+const changeEstimate = ref(false)
+const estimate = ref('')
 watch(() => props.detailTask, () => {
     getTaskByCode(props.detailTask.code)
     getListCommentOfIssue(itemTask.value.id)
@@ -153,13 +177,23 @@ const displayUser = computed(() => {
     if (filterData && filterData[0]?.name != undefined) return filterData[0].name
     else return 'Unassigned'
 })
+
 const updateAssign = () => {
     const data = { ...itemTask.value };
     data.assign.userID = selectedUser.value.code;
     data.assign.img = selectedUser.value.img;
     updateInfoIssue(data)
+    getTaskByCode(itemTask.value.code)
     changeAssign.value = false
     selectedUser.value = null
+}
+const updateEstimate = () => {
+    const data = { ...itemTask.value };
+    data.assign.estimate = estimate.value;
+    updateInfoIssue(data)
+    getTaskByCode(itemTask.value.code)
+    changeEstimate.value = false;
+    estimate.value = ''
 }
 const editText = (type) => {
     if (type == 1) {
