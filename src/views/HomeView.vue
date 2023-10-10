@@ -2,7 +2,6 @@
 import { ref, reactive, watch } from "vue";
 import Editor from 'primevue/editor';
 import { Form, Field } from 'vee-validate';
-import createQuestionComp from '../components/CreateQuestion/index.vue'
 import * as Yup from 'yup'
 import { useToast } from "primevue/usetoast";
 import firebase from '@/utils/firebase';
@@ -139,7 +138,7 @@ const RequestQues = () => {
           </div>
         </div>
         <div>
-          <createQuestionComp v-bind:quizType="Number(dataQuestion.quizType)" v-on:updateAnswer="updateAnswer" />
+          <!-- <createQuestionComp v-bind:quizType="Number(dataQuestion.quizType)" v-on:updateAnswer="updateAnswer" /> -->
         </div>
 
         <div class="flex justify-center">
