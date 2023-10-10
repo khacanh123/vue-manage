@@ -14,8 +14,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import Sidebar from '@/components/layout/Sidebar.vue'
-import MenuBar from '@/components/layout/MenuBar.vue'
+import Sidebar from '../components/layout/Sidebar.vue'
+import MenuBar from '../components/layout/MenuBar.vue'
 import { storeToRefs } from 'pinia';
 import { useManageStatus } from '../stores/manageStatus';
 
