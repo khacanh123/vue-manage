@@ -5,6 +5,8 @@ import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup'
 import { useToast } from "primevue/usetoast";
 import firebase from '@/utils/firebase';
+import HeaderComponent from "../components/MyProfile/HeaderComponent.vue";
+import ContentComponent from "../components/MyProfile/ContentComponent.vue";
 
 const toast = useToast();
 const dataQuestion = reactive({
@@ -70,81 +72,14 @@ function onSubmit(values) {
     product.push(data);
   }
 }
-const RequestQues = () => {
-  connectApi
-}
+
 </script>
 
 <template>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <div class="card m-3">
-    <button>Get question</button>
-    <h5 class="card-header">Vue 3 + VeeValidate - Form Validation Example (Composition API)</h5>
-    <div class="card-body">
-      <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors }">
-        <div class="flex flex-wrap">
-          <div class="w-1/3 px-7 py-3">
-            <label for="tensp" class=" font-semibold">Tên câu hỏi</label>
-            <Field name="name" type="text" class="form-control" v-model="dataQuestion.name"
-              :class="{ 'is-invalid': errors.name }" />
-            <div class="invalid-feedback">{{ errors.name
-            }}</div>
-
-          </div>
-          <div class="w-1/3 px-7 py-3">
-            <label for="tensp" class=" font-semibold">Định danh câu hỏi</label>
-            <Field name="tags" type="text" class="form-control" :class="{ 'is-invalid': errors.tags }"
-              v-model="dataQuestion.tags" />
-            <div class="invalid-feedback">{{ errors.tags
-            }}</div>
-          </div>
-          <div class="w-1/3 px-7 py-3">
-            <label for="tensp" class=" font-semibold">Lĩnh vực câu hỏi</label>
-            <Field name="typeQues" v-model="dataQuestion.typeQues" type="text" class="form-control"
-              :class="{ 'is-invalid': errors.typeQues }" />
-            <div class="invalid-feedback">{{ errors.typeQues
-            }}</div>
-          </div>
-
-          <div class="w-1/3 px-7 py-3">
-            <label for="tensp" class=" font-semibold">Độ khó</label>
-            <Field name="level" v-model="dataQuestion.level" as="select" class="form-control"
-              :class="{ 'is-invalid': errors.level }">
-              <option value="1">Dễ</option>
-              <option value="2">Trung bình</option>
-              <option value="3">Khó</option>
-            </Field>
-            <div class="invalid-feedback">{{ errors.level
-            }}</div>
-          </div>
-          <div class="w-1/3 px-7 py-3">
-            <label for="tensp" class=" font-semibold">Loại câu hỏi</label>
-            <Field name="quizType" as="select" class="form-control" v-model="dataQuestion.quizType"
-              :class="{ 'is-invalid': errors.quizType }">
-              <option value="0">Tự luận</option>
-              <option value="1">Trắc nghiệm 1 đáp án đúng</option>
-              <option value="2">Trắc nghiệm nhiều đáp án đúng</option>
-            </Field>
-            <div class="invalid-feedback">{{ errors.quizType
-            }}</div>
-          </div>
-          <div class="w-full  px-7 py-3">
-            <label for="" class=" font-semibold">Nội dung câu hỏi</label>
-            <Editor v-model="dataQuestion.text" editorStyle="height: 100px" />
-          </div>
-          <div class="w-full  px-7 py-3">
-            <label for="" class=" font-semibold">Nội dung giải thích</label>
-            <Editor v-model="dataQuestion.solution" editorStyle="height: 100px" />
-          </div>
-        </div>
-        <div>
-          <!-- <createQuestionComp v-bind:quizType="Number(dataQuestion.quizType)" v-on:updateAnswer="updateAnswer" /> -->
-        </div>
-
-        <div class="flex justify-center">
-          <Button type="submit" class="w-[200px]" label="Tạo mới" />
-        </div>
-      </Form>
-    </div>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="/assets/css/myprofile.css">
+  <div class="content-body">
+    <HeaderComponent />
+    <ContentComponent />
   </div>
 </template>
