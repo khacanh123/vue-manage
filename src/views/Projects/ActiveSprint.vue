@@ -1,4 +1,5 @@
 <template>
+    <link rel="stylesheet" href="/assets/css/hinboard.css" />
     <div class="description">
         <div class="flex justify-between">
             <div>

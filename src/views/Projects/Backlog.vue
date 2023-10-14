@@ -1,4 +1,6 @@
 <template>
+    <link rel="stylesheet" href="/assets/css/hinboard.css" />
+
     <!-- <button @click="cloneDataFunc()">clonedata</button> -->
     <div class="content z-1 m-3">
 

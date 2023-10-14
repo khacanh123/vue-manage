@@ -81,5 +81,9 @@ function onSubmit(values) {
   <div class="content-body">
     <HeaderComponent />
     <ContentComponent />
+
+    <div class="absolute lg:block hidden bottom-8 right-7 h-20 w-20 bg-green-500 rounded-full p-3">
+      <img src="/assets/images/customer.jpg" />
+    </div>
   </div>
 </template>
