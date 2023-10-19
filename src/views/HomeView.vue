@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import Editor from 'primevue/editor';
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup'
@@ -72,7 +72,23 @@ function onSubmit(values) {
     product.push(data);
   }
 }
+const audio = new Audio('/assets/catdoinoisau.mp3');
 
+const audioControl = ref(null);
+const animationImg = ref(null);
+const statusControl = ref(false);
+onMounted(() => {
+  audioControl.value.addEventListener('click', () => {
+    document.querySelector('.img-style').classList.toggle('active'); // Toggle the "active" class
+    animationImg.value.classList.toggle('active');
+    statusControl.value = !statusControl.value;
+    if (statusControl.value) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+  });
+})
 </script>
 
 <template>
@@ -82,8 +98,20 @@ function onSubmit(values) {
     <HeaderComponent />
     <ContentComponent />
 
-    <div class="absolute lg:block hidden bottom-8 right-7 h-20 w-20 bg-green-500 rounded-full p-3">
-      <img src="/assets/images/customer.jpg" />
+    <div class="img-song">
+      <img
+        src='https://hungnmdev.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fmusic%20dance.54c6a4d8.gif&w=384&q=75'
+        class='animation-song' ref="animationImg" />
+    </div>
+    <div class="content-song">
+      <div class="ab audio-control" ref="audioControl">
+
+        <i class="icon-media" :class="statusControl ? 'pi  pi-pause' : 'pi pi-play'" style="font-size:24px"></i>
+        <img
+          src='https://yt3.ggpht.com/JOoDtyUm8ofOw8PCSuhLo_Qxge-RSyC7kjtN9fYIY3x8t04UcGTGrO-6n3i9J6lRxc0HiZLvcYk=s48-c-k-c0x00ffffff-no-rj'
+          class='img-style' />
+      </div>
+      <div class="text-song">anh đang ở đấy</div>
     </div>
   </div>
 </template>

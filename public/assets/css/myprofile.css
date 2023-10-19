@@ -513,3 +513,88 @@ img {
         font-size: 50%;
     }
 }
+
+.content-song {
+    display: flex;
+    align-items: center;
+    width: 60px;
+    border: 1px solid;
+    height: 60px;
+    border-radius: 60px;
+    position: absolute;
+    transition: width 0.3s;
+    background-color: rgb(255 238 221);
+    bottom: 10px;
+}
+
+.content-song:hover .text-song {
+    width: 170px;
+}
+
+.content-song:hover {
+    width: 230px;
+}
+
+.ab {
+    height: 60px;
+    width: 60px;
+    border: 1px solid;
+    border-radius: 60px;
+    position: relative;
+}
+
+.text-song {
+    margin-left: 5px;
+    text-decoration: underline;
+    display: none;
+    transition: width 0.3s;
+    width: 0px;
+}
+
+.content-song:hover .text-song {
+    display: block;
+}
+
+.img-style {
+    height: 60px;
+    width: 60px;
+    border-radius: 60px;
+}
+
+.img-style.active {
+    animation: spin 10s linear infinite;
+    /* Apply the spin animation when the "active" class is present */
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.img-song {
+    position: absolute;
+    bottom: 75px;
+}
+
+.img-song>img {
+    height: 260px;
+    width: 120px;
+    display: none;
+}
+
+.animation-song.active {
+    display: block;
+}
+
+.icon-media {
+    color: rgb(73, 173, 212);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+}
