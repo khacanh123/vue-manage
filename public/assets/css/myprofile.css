@@ -518,10 +518,10 @@ img {
     display: flex;
     align-items: center;
     width: 60px;
-    border: 1px solid;
+    /* border: 1px solid; */
     height: 60px;
     border-radius: 60px;
-    position: absolute;
+    position: fixed;
     transition: width 0.3s;
     background-color: rgb(255 238 221);
     bottom: 10px;
@@ -538,14 +538,17 @@ img {
 .ab {
     height: 60px;
     width: 60px;
-    border: 1px solid;
+    /* border: 1px solid #2fff4b; */
     border-radius: 60px;
     position: relative;
+    /* background-color: #2fff4b; */
+    background-image: url('https://yt3.ggpht.com/g85WW5Wzm_gUkEJnSE7W7xeAW-pvjCp_d9ECqHH-fG5U1wZBQpf57WoGuSujngjPfenVmA8mrw=s48-c-k-c0x00ffffff-no-rj');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .text-song {
     margin-left: 5px;
-    text-decoration: underline;
     display: none;
     transition: width 0.3s;
     width: 0px;
@@ -561,7 +564,7 @@ img {
     border-radius: 60px;
 }
 
-.img-style.active {
+.ab.active {
     animation: spin 10s linear infinite;
     /* Apply the spin animation when the "active" class is present */
 }
@@ -576,7 +579,7 @@ img {
 }
 
 .img-song {
-    position: absolute;
+    position: fixed;
     bottom: 75px;
 }
 

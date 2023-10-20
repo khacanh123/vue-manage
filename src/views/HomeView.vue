@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import Editor from 'primevue/editor';
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup'
@@ -77,15 +77,48 @@ const audio = new Audio('/assets/catdoinoisau.mp3');
 const audioControl = ref(null);
 const animationImg = ref(null);
 const statusControl = ref(false);
+const timeAudio = ref(0)
+const currentTime = ref(0);
+const percentage = ref(0)
+const timeAudioComputed = computed(() => {
+  const minutes = Math.floor(timeAudio.value / 60);
+  const remainingSeconds = timeAudio.value % 60;
+  return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+})
+const currentTimeComputed = computed(() => {
+  const minutes = Math.floor(currentTime.value / 60);
+  const remainingSeconds = currentTime.value % 60;
+  return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+})
 onMounted(() => {
+  audio.addEventListener('loadedmetadata', function () {
+    // Lấy thời lượng của tệp âm thanh (giây)
+    const durationInSeconds = audio.duration;
+    timeAudio.value = parseInt(durationInSeconds + '');
+    console.log('Thời lượng của audio: ' + parseInt(durationInSeconds + '') + ' giây');
+  });
+  let timeRun = null;
   audioControl.value.addEventListener('click', () => {
-    document.querySelector('.img-style').classList.toggle('active'); // Toggle the "active" class
+    audioControl.value.classList.toggle('active'); // Toggle the "active" class
     animationImg.value.classList.toggle('active');
     statusControl.value = !statusControl.value;
     if (statusControl.value) {
+      timeRun = setInterval(function () {
+        // Mã bạn muốn thực hiện định kỳ
+        currentTime.value = currentTime.value + 1;
+        percentage.value = (currentTime.value / (timeAudio.value + 1)) * 100;
+        if (currentTime.value == timeAudio.value + 1) {
+          clearInterval(timeRun)
+          statusControl.value = false;
+          audioControl.value.classList.toggle('active'); // Toggle the "active" class
+          animationImg.value.classList.toggle('active');
+          currentTime.value = 0
+        }
+      }, 1000);
       audio.play();
     } else {
       audio.pause();
+      clearInterval(timeRun)
     }
   });
 })
@@ -103,15 +136,27 @@ onMounted(() => {
         src='https://hungnmdev.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fmusic%20dance.54c6a4d8.gif&w=384&q=75'
         class='animation-song' ref="animationImg" />
     </div>
-    <div class="content-song">
+    <div class="content-song" :style="statusControl && 'width: 300px'">
       <div class="ab audio-control" ref="audioControl">
 
         <i class="icon-media" :class="statusControl ? 'pi  pi-pause' : 'pi pi-play'" style="font-size:24px"></i>
-        <img
-          src='https://yt3.ggpht.com/JOoDtyUm8ofOw8PCSuhLo_Qxge-RSyC7kjtN9fYIY3x8t04UcGTGrO-6n3i9J6lRxc0HiZLvcYk=s48-c-k-c0x00ffffff-no-rj'
-          class='img-style' />
+
       </div>
-      <div class="text-song">anh đang ở đấy</div>
+      <div class="text-song" :style="statusControl && 'display: block; width: 200px'">
+        <div v-if="statusControl">
+          <p class="text-center underline">Cắt đôi nỗi sầu - TDT</p>
+          <div class="flex">
+            <p class="w-[15%]">{{ currentTimeComputed }}</p>
+            <div class="w-[70%] border-1 border-[black]" style="border: 1px solid">
+              <div :class="`bg-[#2fff4b] h-full `" :style="`width: ${percentage}%`"></div>
+            </div>
+            <p class="w-[15%] ml-1">{{ timeAudioComputed }}</p>
+          </div>
+        </div>
+        <div v-else>
+          <p class="text-center underline">Cắt đôi nỗi sầu - TDT</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
